@@ -14,6 +14,8 @@ file_name = "Set your .a3da name here"
 empty_camera = bpy.data.objects['CameraTrack']
 empty_interest = bpy.data.objects['Interest']
 camera = bpy.data.objects['Camera']
+dof_interest = bpy.data.objects['dofInterest']
+dof_focusrange = bpy.data.objects['dofFocusRange']
 scene = bpy.context.scene
 max_scene = scene.frame_end+1
 fps = bpy.context.scene.render.fps
@@ -22,6 +24,10 @@ trans_viewp_list = []
 roll_viewp_list = []
 fov_list = []
 trans_interest_list = []
+trans_dof_list = []
+roll_dof_list = []
+scale_dof_list = []
+enable_dof_list = []
 
 #
 for frame in range(scene.frame_start, scene.frame_end+1):
@@ -48,6 +54,21 @@ for frame in range(scene.frame_start, scene.frame_end+1):
     # Transformation (x,y,z) of the Interest
     trans_interest = empty_interest.matrix_local.to_translation()
     trans_interest_list.append([frame, trans_interest.x, trans_interest.y, trans_interest.z])
+    
+    # Distance of the DOF Focus
+    trans_dof = dof_interest.matrix_local.to_translation()
+    trans_dof_list.append([frame, trans_dof.x, trans_dof.y, trans_dof.z])
+    
+    # F-Stop for Fuzzing Range
+    fstop = dof_focusrange.matrix_local.to_scale()
+    scale_dof_list.append([frame, fstop.y])
+
+    # Get Ratio of Camera
+    ratio = camera.data.dof.aperture_ratio
+    roll_dof_list.append([frame, ratio])
+
+    # Is DOF enabled on Camera
+    enable_dof_list.append([frame, 1 if camera.data.dof.use_dof else 0])
 
 # json based .a3da camera structure by Korekonder
 export = json.dumps(
@@ -210,6 +231,59 @@ export = json.dumps(
         }
       }
     ],
+    "DOF": {
+      "Rot": {
+        "X": {
+           "Type": "Static",
+           "Value": 2
+        },
+        "Y": {
+          "Type": "Linear",
+          "Max": max_scene,
+          "Keys": [[i[0], i[1]] for i in roll_dof_list]
+        },
+        "Z": {
+          "Type": "Linear",
+          "Max": max_scene,
+          "Keys": [[i[0], i[1]] for i in enable_dof_list]
+        }
+      },
+      "Scale": {
+        "X": {
+          "Type": "Linear",
+          "Max": max_scene,
+          "Keys": [[i[0], i[1]] for i in scale_dof_list]
+        },
+        "Y": {
+          "Type": "Static",
+          "Value": 1
+        },
+        "Z": {
+          "Type": "Static",
+          "Value": 1
+        }
+      },
+      "Trans": {
+        "X": {
+          "Type": "Hermite",
+          "Max": max_scene,
+          "Keys": [[i[0], i[1]] for i in trans_dof_list]
+        },
+        "Y": {
+          "Type": "Hermite",
+          "Max": max_scene,
+          "Keys": [[i[0], i[2]] for i in trans_dof_list]
+        },
+        "Z": {
+          "Type": "Hermite",
+          "Max": max_scene,
+          "Keys": [[i[0], i[3]] for i in trans_dof_list]
+        }
+      },
+      "Visibility": {
+        "Type": "Static",
+        "Value": 1}
+    },
     "PlayControl": {
       "Begin": 0,
       "FPS": fps,
