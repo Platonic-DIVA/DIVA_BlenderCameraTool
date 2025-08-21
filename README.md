@@ -10,14 +10,19 @@ Open the .blend file and go to the 'Animation' tab.
 You can animate the following objects:
 
 * CameraTrack (Loc x,y,z)
-	* Camera (Focal Length, Rot z)
+	* Camera (Focal Length, Rot z, Depth of Field, Focus on Object, Ratio)
 * Interest (Loc x,y,z)
+* dofInterest (Loc x,y,z)
+* dofFocusRange (Scale y)
 
 (If a property have a Lock, is not supposed to be animated)
 	
 DIVA uses a camera system based on a Camera Position and an Interest. The Camera Position is where in the 3D space the camera is, while the Interest is where the camera is looking.
 For example, if you have your 'Interest' positioned at (0,0,0) and you move your 'CameraTrack', the camera will always be pointing at your (0,0,0) 'Interest'.
 Animate the 'camera' as desired.
+
+Animated DoF is supported, you can enable and animate DoF under the Camera Properties, and animate the focus and range with the "dofInterest" and "dofFocusRange" objects. You can animate the strength with "Ratio"
+**Note:** Ratio is the intensity of the DoF in game, but is not reflected in Blender. 0 is disabled, 1 is full strength. Please keep this in mind.
 
 ## JSON Export/Conversion
 When you're ready to export your work, follow these steps:
