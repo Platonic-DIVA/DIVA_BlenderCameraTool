@@ -21,7 +21,8 @@ DIVA uses a camera system based on a Camera Position and an Interest. The Camera
 For example, if you have your 'Interest' positioned at (0,0,0) and you move your 'CameraTrack', the camera will always be pointing at your (0,0,0) 'Interest'.
 Animate the 'camera' as desired.
 
-Animated DoF is supported, you can enable and animate DoF under the Camera Properties, and animate the focus and range with the "dofInterest" and "dofFocusRange" objects. You can animate the strength with "Ratio"
+Animated DoF is supported, you can enable and animate DoF under the Camera Properties, and animate the focus and range with the "dofInterest" and "dofFocusRange" objects. 
+You can animate the strength with "Ratio", and enable/disable DoF entirely with the "Depth of Field" option  
 **Note:** Ratio is the intensity of the DoF in game, but is not reflected in Blender. 0 is disabled, 1 is full strength. Please keep this in mind.
 
 ## JSON Export/Conversion
